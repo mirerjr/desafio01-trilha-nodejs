@@ -13,6 +13,10 @@ const users = [];
 function checksExistsUserAccount(request, response, next) {
   const { username } = request.headers;
   
+  if(!username) {
+    return response.status(400).json({error: "User was not informed"});
+  }
+  
   const userFound = users.find(
     (user) => user.username === username
   );
@@ -26,15 +30,19 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 app.post('/users', (request, response) => {
+  const { name, username } = request.body;
+
+  if(!username) {
+    return response.status(400).json({error: "User was not informed"});
+  }
+
   const userFound = users.find(
-    (user) => user.username === request.body.username
+    (user) => user.username === username
   );
   
   if(userFound){
     return response.status(400).json({error: "User already exists"});
   }
-  
-  const { name, username } = request.body;
   
   const user = {
     id: uuidv4(),
