@@ -117,8 +117,16 @@ app.patch('/todos/:id/done', checksExistsUserAccount, checksExistsUserTodo, (req
   return response.send(todo);
 });
 
-app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+app.delete('/todos/:id', checksExistsUserAccount, checksExistsUserTodo, (request, response) => {
+  const { user,todo } = request;
+
+  const todoIndex = user.todos.findIndex(
+    todoList => todoList.id === todo.id
+  );
+  
+  user.todos.splice(todoIndex, 1);
+  
+  return response.status(204).send(user);
 });
 
 module.exports = app;
