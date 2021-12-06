@@ -72,7 +72,7 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
     done: false,
     deadline: new Date(deadline),
     created_at: new Date()
-  }
+  };
   
   user.todos.push(todo);
 
@@ -80,7 +80,26 @@ app.post('/todos', checksExistsUserAccount, (request, response) => {
 });
 
 app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+  const { title, deadline } = request.body;
+  
+  const todo = user.todos.find(
+    todo => todo.id === id
+  );
+  
+  if(!id) {
+    return response.status(400).json({error: "Todo was not informed"});
+  }
+  
+  if(!todo){
+    return response.status(404).json({error: "Todo not found"});
+  }
+
+  todo.title = title;
+  todo.deadline = new Date(deadline);  
+  
+  return response.send(todo);
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
